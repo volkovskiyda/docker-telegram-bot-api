@@ -1,10 +1,8 @@
-FROM ubuntu:22.04
+FROM alpine
 
-ENV DEBIAN_FRONTEND noninteractive
-
-RUN apt-get update
-RUN apt-get upgrade
-RUN apt-get install -y make git zlib1g-dev libssl-dev gperf cmake g++
+RUN apk update
+RUN apk upgrade
+RUN apk add --update alpine-sdk linux-headers git zlib-dev openssl-dev gperf cmake
 WORKDIR /home
 RUN git clone --recursive https://github.com/tdlib/telegram-bot-api.git
 RUN mkdir -p /home/telegram-bot-api/build
