@@ -1,13 +1,15 @@
 name: Create and publish a Docker image
 
 on:
+  workflow_dispatch:
+
   push:
     branches: [ "main" ]
 
 env:
-  REGISTRY: ghcr.io
-  OWNER: ${{ github.repository_owner }}
-  REPOSITORY: ${{ github.repository_owner }}/telegram-bot-api
+  owner: ${{ github.repository_owner }}
+  repository: ${{ github.repository_owner }}/telegram-bot-api
+  registry: ghcr.io
 
 jobs:
   build-and-push-image:
@@ -31,14 +33,14 @@ jobs:
     - name: Login to DockerHub
       uses: docker/login-action@v2
       with:
-        username: ${{ env.OWNER }}
+        username: ${{ env.owner }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
 
     - name: Login to GitHub Container registry
       uses: docker/login-action@v2
       with:
-        registry: ${{ env.REGISTRY }}
-        username: ${{ env.OWNER }}
+        registry: ${{ env.registry }}
+        username: ${{ env.owner }}
         password: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Current date
@@ -51,10 +53,10 @@ jobs:
         platforms: linux/amd64,linux/arm64
         push: true
         tags: |
-          ${{ env.REPOSITORY }}:${{ steps.date.outputs.date }},
-          ${{ env.REPOSITORY }}:latest,
-          ${{ env.REGISTRY }}/${{ env.REPOSITORY }}:${{ steps.date.outputs.date }},
-          ${{ env.REGISTRY }}/${{ env.REPOSITORY }}:latest
+          ${{ env.repository }}:${{ steps.date.outputs.date }},
+          ${{ env.repository }}:latest,
+          ${{ env.registry }}/${{ env.repository }}:${{ steps.date.outputs.date }},
+          ${{ env.registry }}/${{ env.repository }}:latest
 
     - name: Release
       uses: softprops/action-gh-release@v0.1.14
