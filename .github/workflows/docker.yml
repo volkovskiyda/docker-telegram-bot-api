@@ -17,6 +17,9 @@ env:
 jobs:
   build-and-push-image:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        arch: [ amd64, arm64 ]
     permissions:
       contents: write
       packages: write
@@ -53,7 +56,7 @@ jobs:
     - name: Build and push
       uses: docker/build-push-action@v3
       with:
-        platforms: linux/amd64
+        platforms: linux/${{ matrix.arch }}
         push: true
         tags: |
           ${{ env.repository }}:${{ steps.date.outputs.date }},
